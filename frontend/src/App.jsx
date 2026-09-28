@@ -1,13 +1,18 @@
-import { ChatComponent } from "./components/chat.jsx";
-import { ProductList } from "./components/orders.jsx";
+import { useEffect, useState } from "react";
+import { connectWebSocket } from "./services/websocket";
 
 function App() {
+  const [stock, setStock] = useState();
+
+  useEffect(() => {
+    const disconnect = connectWebSocket();
+    return () => disconnect(); // cleanup khi unmount
+  }, []);
+
   return (
     <div>
       <h1>WebSocket Test</h1>
-      <ChatComponent />
-      <h1>Order Test</h1>
-      <ProductList />
+      <p></p>
     </div>
   );
 }
