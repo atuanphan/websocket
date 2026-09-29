@@ -7,6 +7,7 @@ export function ProductList({ token }) {
     const [products, setProducts] = useState([]);
     const [productsError, setProductsError] = useState('');
     const [orders, setOrders] = useState([]);
+    const [orderCount, setOrderCount] = useState(0);
     const [orderingProductId, setOrderingProductId] = useState(null);
     const [orderNotice, setOrderNotice] = useState(null);
 
@@ -30,6 +31,7 @@ export function ProductList({ token }) {
     useEffect(() => {
         const client = new Client({
             webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+            connectHeaders: { Authorization: `Bearer ${token}` },
             reconnectDelay: 5000,
             onConnect: () => {
                 client.subscribe('/topic/stock', (msg) => {
@@ -43,6 +45,10 @@ export function ProductList({ token }) {
                         )
                     );
                 });
+                client.subscribe('/user/topic/notify', (msg) => {
+                    setOrderCount(Number(msg.body));
+                });
+                client.publish({ destination: '/app/orders/count' });
             },
             onStompError: (frame) => console.error(frame),
         });
@@ -53,7 +59,7 @@ export function ProductList({ token }) {
         return () => {
             client.deactivate();
         };
-    }, []);
+    }, [token]);
 
     // Gọi REST API để đặt hàng
     const handleOrder = async (productId) => {
@@ -136,7 +142,7 @@ export function ProductList({ token }) {
             <section className="orders-section" aria-labelledby="orders-heading">
                 <div className="section-heading">
                     <h2 id="orders-heading">Đơn hàng vừa đặt</h2>
-                    <span>{orders.length} đơn</span>
+                    <span>Tổng {orderCount} đơn</span>
                 </div>
                 {orders.length === 0 ? (
                     <p className="empty-orders">Đơn hàng mới sẽ hiển thị tại đây.</p>

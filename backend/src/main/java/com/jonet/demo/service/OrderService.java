@@ -67,8 +67,19 @@ public class OrderService {
         
         messagingTemplate.convertAndSend("/topic/stock", update);
 
+        getQuantityOrder(username);
+
         return new OrderResponse(
                 order.getId(), user.getUsername(), product.getId(), product.getName(),
                 request.getQuantity(), product.getQuantity());
+    }
+
+    public void getQuantityOrder(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new RuntimeException("Không tìm thấy tài khoản");
+        }
+        Long quantity = orderRepository.countByUser(user);
+        messagingTemplate.convertAndSendToUser(user.getUsername(), "/topic/notify", quantity);
     }
 }

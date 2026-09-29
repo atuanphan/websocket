@@ -3,6 +3,7 @@ package com.jonet.demo.controller;
 import java.security.Principal;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor 
 public class OrderController {
     private final OrderService orderService;
+
+    @MessageMapping("/orders/count")
+    public void getOrderCount(Principal principal) {
+        orderService.getQuantityOrder(principal.getName());
+    }
 
     @PostMapping 
     public ResponseEntity<?> createOrder(@RequestBody OrderRequest request, Principal principal) {

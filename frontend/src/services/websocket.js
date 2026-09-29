@@ -1,5 +1,5 @@
 export function connectWebSocket() {
-  const socket = new WebSocket("ws://localhost:8080/ws");
+  const socket = new WebSocket("ws://localhost:8080/hello");
 
   socket.onopen = () => {
     console.log("Đã kết nối WebSocket");
