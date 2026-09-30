@@ -1,5 +1,4 @@
 import { Client } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
 import { useEffect, useRef, useState } from 'react';
 
 export function ProductList({ token }) {
@@ -30,7 +29,7 @@ export function ProductList({ token }) {
     // Kết nối WebSocket để nhận cập nhật số lượng realtime
     useEffect(() => {
         const client = new Client({
-            webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+            brokerURL: 'ws://localhost:8080/ws',
             connectHeaders: { Authorization: `Bearer ${token}` },
             reconnectDelay: 5000,
             onConnect: () => {

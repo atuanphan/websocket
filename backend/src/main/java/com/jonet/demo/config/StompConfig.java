@@ -60,7 +60,6 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer{
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("*")
-                .withSockJS(); // fallback cho trình duyệt không hỗ trợ WS
+                .setAllowedOriginPatterns("*");
     }
 }
